@@ -10,12 +10,19 @@ const initialData = {
     "column-1": {
       id: "column-1",
       title: "To Do",
-      taskIds: ["task-1", "task-2", "task-3", "task-4"],
+      taskIds: ["task-1", "task-2"],
+      // know which task is currently inside which column
+      // this array is also used to maintain order
+    },
+    "column-2": {
+      id: "column-2",
+      title: "Doing",
+      taskIds: ["task-3", "task-4"],
       // know which task is currently inside which column
       // this array is also used to maintain order
     },
   },
-  columnOrder: ["column-1"],
+  columnOrder: ["column-1", "column-2"], // dependency between here and columns obj (react looks here to build columns)
 };
 
 export default initialData;

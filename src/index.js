@@ -61,12 +61,14 @@ const App = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      {data.columnOrder.map((columnId) => {
-        const column = data.columns[columnId];
-        const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
+      <div className={`grid grid-cols-${data.columnOrder.length}`}>
+        {data.columnOrder.map((columnId) => {
+          const column = data.columns[columnId];
+          const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
 
-        return <Column key={column.id} column={column} tasks={tasks} />;
-      })}
+          return <Column key={column.id} column={column} tasks={tasks} />;
+        })}
+      </div>
     </DragDropContext>
   );
 };

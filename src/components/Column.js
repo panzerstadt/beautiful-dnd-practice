@@ -22,9 +22,6 @@ const TaskList = ({ children, innerRef }) => {
 };
 
 export const Column = (props) => {
-  console.log(props);
-  // return JSON.stringify(props);
-
   return (
     <Container>
       <Title>{props.column.title}</Title>

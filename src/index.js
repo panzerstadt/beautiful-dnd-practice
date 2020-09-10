@@ -31,26 +31,41 @@ const App = () => {
     }
 
     // from here, dnd needs to rearrange stuff
+    const isSameColumn = source.droppableId === destination.droppableId;
     // 1. reorder task ids from array
-    const column = data.columns[source.droppableId]; // FROM
+    const fromColumn = data.columns[source.droppableId]; // FROM
+    console.log("from column", fromColumn);
 
-    const newTaskIds = Array.from(column.taskIds); // FROM (immutable copy)
-    console.log("original ID array: ", newTaskIds);
-    newTaskIds.splice(source.index, 1); // remove FROM index
-    console.log("removed old ID: ", source.index, newTaskIds);
-    newTaskIds.splice(destination.index, 0, draggableId); // replace TO index
-    console.log("replaced new ID: ", destination.index, newTaskIds);
+    const newFromTaskIds = Array.from(fromColumn.taskIds); // FROM (immutable copy)
+    console.log("original ID array: ", newFromTaskIds);
+    newFromTaskIds.splice(source.index, 1); // remove FROM index
+    console.log("removed old ID: ", source.index, newFromTaskIds);
 
-    const newColumn = {
-      ...column,
-      taskIds: newTaskIds,
+    const toColumn = data.columns[destination.droppableId]; // TO
+    console.log("to column", toColumn);
+
+    const newToTaskIds = isSameColumn
+      ? newFromTaskIds
+      : Array.from(toColumn.taskIds);
+    newFromTaskIds.splice(destination.index, 0, draggableId); // replace TO index
+    console.log("replaced new ID: ", destination.index, newToTaskIds);
+
+    const newFromColumn = {
+      ...fromColumn,
+      taskIds: newFromTaskIds,
+    };
+
+    const newToColumn = {
+      ...toColumn,
+      taskIds: newToTaskIds,
     };
 
     const newState = {
       ...data,
       columns: {
         ...data.columns,
-        [newColumn.id]: newColumn,
+        [newFromColumn.id]: newFromColumn,
+        [newToColumn.id]: newToColumn,
       },
     };
 
@@ -61,12 +76,14 @@ const App = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      {data.columnOrder.map((columnId) => {
-        const column = data.columns[columnId];
-        const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
+      <div className={`grid grid-cols-${data.columnOrder.length}`}>
+        {data.columnOrder.map((columnId) => {
+          const column = data.columns[columnId];
+          const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
 
-        return <Column key={column.id} column={column} tasks={tasks} />;
-      })}
+          return <Column key={column.id} column={column} tasks={tasks} />;
+        })}
+      </div>
     </DragDropContext>
   );
 };

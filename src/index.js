@@ -54,31 +54,58 @@ const App = () => {
 
     // from here, dnd needs to rearrange stuff
     // 1. reorder task ids from array
-    const column = data.columns[source.droppableId]; // FROM
+    const start = data.columns[source.droppableId];
+    const finish = data.columns[destination.droppableId];
 
-    const newTaskIds = Array.from(column.taskIds); // FROM (immutable copy)
-    console.log("original ID array: ", newTaskIds);
-    newTaskIds.splice(source.index, 1); // remove FROM index
-    console.log("removed old ID: ", source.index, newTaskIds);
-    newTaskIds.splice(destination.index, 0, draggableId); // replace TO index
-    console.log("replaced new ID: ", destination.index, newTaskIds);
+    if (start === finish) {
+      const newTaskIds = Array.from(start.taskIds); // FROM (immutable copy)
+      newTaskIds.splice(source.index, 1); // remove FROM index
+      newTaskIds.splice(destination.index, 0, draggableId); // update TO index
 
-    const newColumn = {
-      ...column,
-      taskIds: newTaskIds,
+      const newColumn = {
+        ...start,
+        taskIds: newTaskIds,
+      };
+
+      const newState = {
+        ...data,
+        columns: {
+          ...data.columns,
+          [newColumn.id]: newColumn,
+        },
+      };
+
+      setData(newState); // optimistic update, the server doesn't know this yet
+      return;
+    }
+
+    // moving from one list to another
+    const startTaskIds = Array.from(start.taskIds);
+    startTaskIds.splice(source.index, 1);
+    const startColumn = {
+      ...start,
+      taskIds: startTaskIds,
+    };
+
+    const finishTaskIds = Array.from(finish.taskIds);
+    finishTaskIds.splice(destination.index, 0, draggableId);
+    const finishColumn = {
+      ...finish,
+      taskIds: finishTaskIds,
     };
 
     const newState = {
       ...data,
       columns: {
         ...data.columns,
-        [newColumn.id]: newColumn,
+        [startColumn.id]: startColumn,
+        [finishColumn.id]: finishColumn,
       },
     };
 
-    setData(newState); // optimistic update, the server doesn't know this yet
+    setData(newState);
 
-    // maybe send the update to the server here (to update the database, which in this case is just the data.js)
+    // maybe send the update to the server in a useEffect that listens to data changes (to update the database, which in this case is just the data.js)
   };
 
   return (

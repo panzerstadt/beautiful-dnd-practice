@@ -13,9 +13,12 @@ const Title = ({ children }) => {
   return <h3 className="p-4">{children}</h3>;
 };
 
-const TaskList = ({ children, innerRef }) => {
+const TaskList = ({ children, isDragging, innerRef }) => {
+  const defaultStyle = "p-4";
+  const draggingStyle =
+    "border border-2 border-dashed bg-indigo-100 " + defaultStyle;
   return (
-    <div className="p-4" ref={innerRef}>
+    <div className={isDragging ? draggingStyle : defaultStyle} ref={innerRef}>
       {children}
     </div>
   );
@@ -28,7 +31,11 @@ export const Column = (props) => {
       <Droppable droppableId={props.column.id}>
         {(provided, snapshot) => {
           return (
-            <TaskList {...provided.droppableProps} innerRef={provided.innerRef}>
+            <TaskList
+              {...provided.droppableProps}
+              isDragging={snapshot.isDraggingOver}
+              innerRef={provided.innerRef}
+            >
               {props.tasks.map((task, index) => (
                 <Task key={task.id} index={index} task={task} />
               ))}

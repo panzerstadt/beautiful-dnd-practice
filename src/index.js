@@ -18,7 +18,7 @@ const App = () => {
   };
 
   const onDragStart = () => {
-    document.body.style.color = "orange";
+    document.body.style.color = "#7d8491";
     document.body.style.transition =
       "background-color 300ms ease, color 300ms ease";
   };

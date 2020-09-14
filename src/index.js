@@ -17,7 +17,24 @@ const App = () => {
     }
   };
 
+  const onDragStart = () => {
+    document.body.style.color = "orange";
+    document.body.style.transition =
+      "background-color 300ms ease, color 300ms ease";
+  };
+
+  const onDragUpdate = (update) => {
+    const { destination } = update;
+    const opacity = destination
+      ? destination.index / Object.keys(data.tasks).length
+      : 0;
+
+    document.body.style.backgroundColor = `rgba(24, 48, 89, ${opacity})`;
+  };
+
   const onDragEnd = (result) => {
+    document.body.style.color = "inherit";
+    document.body.style.backgroundColor = "inherit";
     const { destination, source, draggableId } = result;
 
     if (!destination) onDelete(result);
@@ -60,7 +77,11 @@ const App = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext
+      onDragStart={onDragStart}
+      onDragUpdate={onDragUpdate}
+      onDragEnd={onDragEnd}
+    >
       <div className={`grid grid-cols-${data.columnOrder.length}`}>
         {data.columnOrder.map((columnId) => {
           const column = data.columns[columnId];

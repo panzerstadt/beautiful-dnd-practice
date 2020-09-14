@@ -5,7 +5,9 @@ import { Task } from "./Task";
 
 const Container = ({ children }) => {
   return (
-    <div className="m-4 border border-grey-700 rounded-md">{children}</div>
+    <div className="m-4 border border-grey-700 rounded-md bg-white">
+      {children}
+    </div>
   );
 };
 

@@ -22,7 +22,7 @@ const Container = ({ dndProvided, isDragging, children, ...rest }) => {
   return (
     <div
       className={
-        "flex justify-between items-center border border-gray-300 mb-2 p-2 rounded-md shadow-sm " +
+        "flex justify-between items-center border border-gray-300 mb-2 p-2 rounded-md shadow-sm text-xs " +
         bgColor
       }
       {...rest}

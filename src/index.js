@@ -6,6 +6,8 @@ import "./styles/tailwind.output.css";
 import { Column } from "./components/Column";
 import initialData from "./data";
 
+const DELETE_ON_DRAG_AWAY = true;
+
 const App = () => {
   const [data, setData] = useState(initialData);
 
@@ -35,17 +37,20 @@ const App = () => {
   const onDragEnd = (result) => {
     document.body.style.color = "inherit";
     document.body.style.backgroundColor = "inherit";
+
+    const hasLocationChanged = (destination, source) =>
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index;
+
     const { destination, source, draggableId } = result;
 
-    if (!destination) onDelete(result);
-
-    // check to see if the location of the draggable changed
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    // deal with invalid / outside drops
+    if (!destination) {
+      DELETE_ON_DRAG_AWAY && onDelete(result);
       return;
     }
+    // deal with same location drops
+    if (hasLocationChanged(destination, source)) return;
 
     // from here, dnd needs to rearrange stuff
     // 1. reorder task ids from array
@@ -82,7 +87,7 @@ const App = () => {
       onDragUpdate={onDragUpdate}
       onDragEnd={onDragEnd}
     >
-      <div className={`grid grid-cols-${data.columnOrder.length}`}>
+      <div className={`grid grid-cols-${data.columnOrder.length} gap-4 m-4`}>
         {data.columnOrder.map((columnId) => {
           const column = data.columns[columnId];
           const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);

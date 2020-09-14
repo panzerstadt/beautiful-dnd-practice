@@ -10,6 +10,7 @@ const DELETE_ON_DRAG_AWAY = true;
 
 const App = () => {
   const [data, setData] = useState(initialData);
+  const [homeIndex, setHomeIndex] = useState(null);
 
   const onDelete = (result) => {
     if (window.confirm("Would you like to delete this task?")) {
@@ -19,10 +20,13 @@ const App = () => {
     }
   };
 
-  const onDragStart = () => {
+  const onDragStart = (start) => {
     document.body.style.color = "#7d8491";
     document.body.style.transition =
       "background-color 300ms ease, color 300ms ease";
+
+    const homeIndex = data.columnOrder.indexOf(start.source.droppableId);
+    setHomeIndex(homeIndex);
   };
 
   const onDragUpdate = (update) => {
@@ -37,6 +41,8 @@ const App = () => {
   const onDragEnd = (result) => {
     document.body.style.color = "inherit";
     document.body.style.backgroundColor = "inherit";
+
+    setHomeIndex(null);
 
     const hasLocationChanged = (destination, source) =>
       destination.droppableId === source.droppableId &&
@@ -115,11 +121,20 @@ const App = () => {
       onDragEnd={onDragEnd}
     >
       <div className={`grid grid-cols-${data.columnOrder.length} gap-4 m-4`}>
-        {data.columnOrder.map((columnId) => {
+        {data.columnOrder.map((columnId, index) => {
           const column = data.columns[columnId];
           const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
 
-          return <Column key={column.id} column={column} tasks={tasks} />;
+          const isDropDisabled = index < homeIndex;
+
+          return (
+            <Column
+              key={column.id}
+              column={column}
+              tasks={tasks}
+              isDropDisabled={isDropDisabled}
+            />
+          );
         })}
       </div>
     </DragDropContext>

@@ -34,7 +34,11 @@ export const Column = (props) => {
   return (
     <Container>
       <Title>{props.column.title}</Title>
-      <Droppable droppableId={props.column.id}>
+      <Droppable
+        droppableId={props.column.id}
+        // type={props.column.id === "column-3" ? "done" : "active"} // method 1: disabling by matching type
+        isDropDisabled={props.isDropDisabled} // method 2
+      >
         {(provided, snapshot) => {
           return (
             <TaskList

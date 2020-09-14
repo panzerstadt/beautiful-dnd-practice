@@ -5,7 +5,7 @@ import { Task } from "./Task";
 
 const Container = ({ children }) => {
   return (
-    <div className="m-4 border border-grey-700 rounded-md bg-white">
+    <div className="border border-grey-700 rounded-md bg-white flex flex-col">
       {children}
     </div>
   );
@@ -16,11 +16,15 @@ const Title = ({ children }) => {
 };
 
 const TaskList = ({ children, isDragging, innerRef }) => {
-  const defaultStyle = "p-4";
+  const defaultStyle = "p-4 flex-grow";
   const draggingStyle =
     "border border-2 border-dashed bg-indigo-100 " + defaultStyle;
   return (
-    <div className={isDragging ? draggingStyle : defaultStyle} ref={innerRef}>
+    <div
+      style={{ minHeight: 100 }}
+      className={isDragging ? draggingStyle : defaultStyle}
+      ref={innerRef}
+    >
       {children}
     </div>
   );
